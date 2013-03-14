@@ -44,15 +44,11 @@
 			for (var i = words.length - 1; i >= 0; i--) {
 				document.getElementById("word"+(i+1)).style.visibility = "hidden";
 			};
-			// document.getElementById("hidebtn").style.display = "none";
-			// document.getElementById("showbtn").style.display = "";
 		}
 		function showList(){
 			for (var i = words.length - 1; i >= 0; i--) {
 				document.getElementById("word"+(i+1)).style.visibility = "";
 			};
-			// document.getElementById("hidebtn").style.display = "";
-			// document.getElementById("showbtn").style.display = "none";
 		}
 		function resetButtons(){
 			$("#newListBtn").removeClass("ui-btn-active")
@@ -65,6 +61,9 @@
 				window.location.reload();
 			}
 			$(document).delegate('#listPage', 'pageshow',function(event){setTimeout(onloadList,1);});
+			window.onmouseup = function (){resetButtons();};
+			window.onmouseup = function (){resetButtons();};
+			$(window).touchend(function(){resetButtons();});
 
 			initVars();
 		}
@@ -85,7 +84,7 @@
 		<ul data-role="listview" data-inset="true">
 			<li data-role="fieldcontain">
 				<label for="numberOfWords">Number Of Words in the List:</label>
-				<input type="range" name="numberOfWords" id="numberOfWords" value="10" min="2" max="100">
+				<input type="range" name="numberOfWords" id="numberOfWords" value="10" min="2" max="100" data-highlight="true">
 			</li>
 			<li class="ui-body ui-body-b">
 				<fieldset class="ui-grid-solo">
@@ -112,9 +111,9 @@
 	<div data-role="footer" data-position="fixed">
 		<div data-role="navbar">
 			<ul>
-				<li><a id="newListBtn" onclick="resetButtons();refreshList();">New List</a></li>
-				<li><a id="hideListBtn" onclick="resetButtons();hideList();">Hide List</a></li>
-				<li><a id="showListBtn" onclick="resetButtons();showList();">Show List</a></li>
+				<li><a id="newListBtn" onclick="refreshList();">New List</a></li>
+				<li><a id="hideListBtn" onclick="hideList();">Hide List</a></li>
+				<li><a id="showListBtn" onclick="showList();">Show List</a></li>
 			</ul>
 		</div>
 	</div>
