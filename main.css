@@ -1,0 +1,7 @@
+html.touch html {
+    zoom: 1.5;
+}
+
+html.no-touch html {
+    zoom: 1;
+}
