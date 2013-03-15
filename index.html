@@ -2,6 +2,7 @@
 <head>
 	<title>Random Word List</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="jquery/mobiscroll.select-2.4.5/css/mobiscroll.custom-2.4.5.min.css" rel="stylesheet" type="text/css" />
 	<link rel="icon" type="image/png" href="favicon.png" />
 	<link rel="stylesheet" href="jquery/jquery.mobile-1.3.0.min.css" />
 	<link rel="stylesheet" href="main.css" />
@@ -9,9 +10,7 @@
 	<script src="jquery/jquery-1.9.1.min.js"></script>
 	<script src="jquery/jquery.mobile-1.3.0.min.js"></script>
 
-	<link href="jquery/mobiscroll.select-2.4.5/css/mobiscroll.custom-2.4.5.min.css" rel="stylesheet" type="text/css" />
 	<script src="jquery/mobiscroll.select-2.4.5/js/mobiscroll.custom-2.4.5.min.js" type="text/javascript"></script>
-	<script src="modernizr.custom.26981.js" type="text/javascript"></script>
 
 	<script type="text/javascript" charset="utf-8">
 		function initVars(){
@@ -23,6 +22,7 @@
 		}
 
 		function onloadList(){
+			if ( wordlist.length == 0 ){console.log("Waited");setTimeout(onloadList,50);return 0;}
 			words = [];
 			numberOfWords = $("#numberOfWords").val();
 			for (var i = 0; i < numberOfWords; i++) {
@@ -58,171 +58,174 @@
 			};
 		}
 		function resetButtons(){
-			$("#newListBtn").removeClass("ui-btn-active")
-			$("#hideListBtn").removeClass("ui-btn-active")
-			$("#showListBtn").removeClass("ui-btn-active")
+			$(".ui-btn-active").removeClass("ui-btn-active")
 		}
 		window.onload = function (){
-			$(function() {
-				$('#numberOfWords').mobiscroll().select({ theme: 'default', display: 'inline', mode: 'scroller'});
-				$('.numberSelecterClass').hide()
-				$('#numberOfWords_dummy').parent().hide()
-
-			});
 			if (window.location.hash != ""){
 				window.location.hash = "";
 				window.location.reload();
 			}
-			$(document).delegate('#listPage', 'pagebeforeshow',function(event){$("html")[0].style.zoom = 1.4;setTimeout(onloadList,1);});
-			$(document).delegate('#startPage', 'pagebeforeshow',function(event){$("html")[0].style.zoom = 1.4;setTimeout(onloadList,1);});
-			window.onmouseup = function (){resetButtons();};
+			$( document ).on( "pageinit", "#listPage", function() {
+			$( document ).on( "swipeleft ", "#listPage", function( e ) {
+				if ( $.mobile.activePage.jqmData( "panel" ) !== "open" ) {
+					if ( e.type === "swipeleft"  ) {
+						$( "#settingsPanel" ).panel( "open" );
+					}
+				}
+			});});
+			$( document ).on( "swipeleft ", "#listPage", function( e ) {
+				if ( $.mobile.activePage.jqmData( "panel" ) !== "open" ) {
+					if ( e.type === "swipeleft" ) {
+						$( "#settingsPanel" ).panel( "open" );
+					}
+				}
+			});
+			$(document).delegate('#listPage', 'pagebeforeshow',function(event){auto_zoom();setTimeout(onloadList,1);});
 			window.onmouseup = function (){resetButtons();};
 			$(window).touchend(function(){resetButtons();});
 
+			$(function() {
+				var sfd = { 'Label 1': { x: 'x', y: 'y', z: 'z' }, 'Label 2': { a: 'a', b: 'b' } , 'Label 3': { 1: '1', 2: '2' }, 'Label 4': { 4: '4', 5: '5' } }
+				$('#numberOfWords').mobiscroll().select({  theme: 'android-ics', display: 'bubble', mode: 'mixed', inputClass: 'i-txt', headerText: '# of Words', rows: 5, showLabel: false });
+				$('#numberOfWords').mobiscroll().change(function(){refreshList();})
+			});
+			auto_zoom();
+
 			initVars();
+			$.mobile.changePage("#listPage");
 		}
 		$( document ).on( "mobileinit", function() {
 			// Make your jQuery Mobile framework configuration changes here!
 			$.support.cors = true;
 			$.mobile.allowCrossDomainPages = true;
 		});
+		function auto_zoom(){
+			if ( is_touch_device() ){
+				$("html")[0].style.zoom = 1.5;
+			}
+			else {
+				$("html")[0].style.zoom = 1;
+			}
+		};
+		function is_touch_device() {
+			return !!('ontouchstart' in window) // works on most browsers 
+				|| !!('onmsgesturechange' in window); // works on ie10
+		};
 	</script>
 </head>
 <body>
-<div data-role="page" id="startPage">
-	<div data-role="header" data-position="fixed">
-		<h1>Random Word List</h1>
-	</div>
-
-	<div data-role="content">
-		<form id="form">
-			<!-- <div data-role="fieldcontain" class="numberSelectClass" id="numberInput">
-				<label for="numberOfWords"># of Words</label>
-				<input type="range" name="numberOfWords" id="numberOfWords" value="10" min="2" max="100" data-highlight="true">
-				<input type="text" name="numberOfWords" id="numberOfWords">
-			</div> -->
-			<div data-role="fieldcontain" class="fieldcontain numberSelectClass" id="numberSelect">
-				<label for="numberOfWords" class="ui-input-text numberSelecterClass"># of Words</label>
-				<select id="numberOfWords" class="numberSelecterClass" data-role="none">
-					<option value="0">0</option>
-					<option value="1">1</option>
-					<option value="2">2</option>
-					<option value="3">3</option>
-					<option value="4">4</option>
-					<option value="5">5</option>
-					<option value="6">6</option>
-					<option value="7">7</option>
-					<option value="8">8</option>
-					<option value="9">9</option>
-					<option value="10">10</option>
-					<option value="11">11</option>
-					<option value="12">12</option>
-					<option value="13">13</option>
-					<option value="14">14</option>
-					<option value="15">15</option>
-					<option value="16">16</option>
-					<option value="17">17</option>
-					<option value="18">18</option>
-					<option value="19">19</option>
-					<option value="20">20</option>
-					<option value="21">21</option>
-					<option value="22">22</option>
-					<option value="23">23</option>
-					<option value="24">24</option>
-					<option value="25">25</option>
-					<option value="26">26</option>
-					<option value="27">27</option>
-					<option value="28">28</option>
-					<option value="29">29</option>
-					<option value="30">30</option>
-					<option value="31">31</option>
-					<option value="32">32</option>
-					<option value="33">33</option>
-					<option value="34">34</option>
-					<option value="35">35</option>
-					<option value="36">36</option>
-					<option value="37">37</option>
-					<option value="38">38</option>
-					<option value="39">39</option>
-					<option value="40">40</option>
-					<option value="41">41</option>
-					<option value="42">42</option>
-					<option value="43">43</option>
-					<option value="44">44</option>
-					<option value="45">45</option>
-					<option value="46">46</option>
-					<option value="47">47</option>
-					<option value="48">48</option>
-					<option value="49">49</option>
-					<option value="50">50</option>
-					<option value="51">51</option>
-					<option value="52">52</option>
-					<option value="53">53</option>
-					<option value="54">54</option>
-					<option value="55">55</option>
-					<option value="56">56</option>
-					<option value="57">57</option>
-					<option value="58">58</option>
-					<option value="59">59</option>
-					<option value="60">60</option>
-					<option value="61">61</option>
-					<option value="62">62</option>
-					<option value="63">63</option>
-					<option value="64">64</option>
-					<option value="65">65</option>
-					<option value="66">66</option>
-					<option value="67">67</option>
-					<option value="68">68</option>
-					<option value="69">69</option>
-					<option value="70">70</option>
-					<option value="71">71</option>
-					<option value="72">72</option>
-					<option value="73">73</option>
-					<option value="74">74</option>
-					<option value="75">75</option>
-					<option value="76">76</option>
-					<option value="77">77</option>
-					<option value="78">78</option>
-					<option value="79">79</option>
-					<option value="80">80</option>
-					<option value="81">81</option>
-					<option value="82">82</option>
-					<option value="83">83</option>
-					<option value="84">84</option>
-					<option value="85">85</option>
-					<option value="86">86</option>
-					<option value="87">87</option>
-					<option value="88">88</option>
-					<option value="89">89</option>
-					<option value="90">90</option>
-					<option value="91">91</option>
-					<option value="92">92</option>
-					<option value="93">93</option>
-					<option value="94">94</option>
-					<option value="95">95</option>
-					<option value="96">96</option>
-					<option value="97">97</option>
-					<option value="98">98</option>
-					<option value="99">99</option>
-					<option value="100">100</option>
-				</select>
-			</div>
-			<a href="#listPage" data-role="button" data-transition="fade">Generate Word List</a>
-			<!-- <li class="ui-body ui-body-b">
-				<fieldset class="ui-grid-solo">
-					<a href="#listPage" data-role="button" data-transition="fade">Generate Word List</a>
-				</fieldset>
-			</li> -->
-		</form>
-	</div>
-
-	<div data-role="footer" data-position="fixed">
-	</div>
+<div data-role="page" id="loading">
 </div>
 <div data-role="page" id="listPage">
+	<div data-role="panel" id="settingsPanel" data-display="push" data-position="right">
+		<!-- <input type="text" id="numberOfWords"/> -->
+		<select id="numberOfWords" class="numberSelecterClass" data-role="none">
+			<option value="100" id="wordsOption100">100</option>
+			<option value="99" id="wordsOption99">99</option>
+			<option value="98" id="wordsOption98">98</option>
+			<option value="97" id="wordsOption97">97</option>
+			<option value="96" id="wordsOption96">96</option>
+			<option value="95" id="wordsOption95">95</option>
+			<option value="94" id="wordsOption94">94</option>
+			<option value="93" id="wordsOption93">93</option>
+			<option value="92" id="wordsOption92">92</option>
+			<option value="91" id="wordsOption91">91</option>
+			<option value="90" id="wordsOption90">90</option>
+			<option value="89" id="wordsOption89">89</option>
+			<option value="88" id="wordsOption88">88</option>
+			<option value="87" id="wordsOption87">87</option>
+			<option value="86" id="wordsOption86">86</option>
+			<option value="85" id="wordsOption85">85</option>
+			<option value="84" id="wordsOption84">84</option>
+			<option value="83" id="wordsOption83">83</option>
+			<option value="82" id="wordsOption82">82</option>
+			<option value="81" id="wordsOption81">81</option>
+			<option value="80" id="wordsOption80">80</option>
+			<option value="79" id="wordsOption79">79</option>
+			<option value="78" id="wordsOption78">78</option>
+			<option value="77" id="wordsOption77">77</option>
+			<option value="76" id="wordsOption76">76</option>
+			<option value="75" id="wordsOption75">75</option>
+			<option value="74" id="wordsOption74">74</option>
+			<option value="73" id="wordsOption73">73</option>
+			<option value="72" id="wordsOption72">72</option>
+			<option value="71" id="wordsOption71">71</option>
+			<option value="70" id="wordsOption70">70</option>
+			<option value="69" id="wordsOption69">69</option>
+			<option value="68" id="wordsOption68">68</option>
+			<option value="67" id="wordsOption67">67</option>
+			<option value="66" id="wordsOption66">66</option>
+			<option value="65" id="wordsOption65">65</option>
+			<option value="64" id="wordsOption64">64</option>
+			<option value="63" id="wordsOption63">63</option>
+			<option value="62" id="wordsOption62">62</option>
+			<option value="61" id="wordsOption61">61</option>
+			<option value="60" id="wordsOption60">60</option>
+			<option value="59" id="wordsOption59">59</option>
+			<option value="58" id="wordsOption58">58</option>
+			<option value="57" id="wordsOption57">57</option>
+			<option value="56" id="wordsOption56">56</option>
+			<option value="55" id="wordsOption55">55</option>
+			<option value="54" id="wordsOption54">54</option>
+			<option value="53" id="wordsOption53">53</option>
+			<option value="52" id="wordsOption52">52</option>
+			<option value="51" id="wordsOption51">51</option>
+			<option value="50" id="wordsOption50">50</option>
+			<option value="49" id="wordsOption49">49</option>
+			<option value="48" id="wordsOption48">48</option>
+			<option value="47" id="wordsOption47">47</option>
+			<option value="46" id="wordsOption46">46</option>
+			<option value="45" id="wordsOption45">45</option>
+			<option value="44" id="wordsOption44">44</option>
+			<option value="43" id="wordsOption43">43</option>
+			<option value="42" id="wordsOption42">42</option>
+			<option value="41" id="wordsOption41">41</option>
+			<option value="40" id="wordsOption40">40</option>
+			<option value="39" id="wordsOption39">39</option>
+			<option value="38" id="wordsOption38">38</option>
+			<option value="37" id="wordsOption37">37</option>
+			<option value="36" id="wordsOption36">36</option>
+			<option value="35" id="wordsOption35">35</option>
+			<option value="34" id="wordsOption34">34</option>
+			<option value="33" id="wordsOption33">33</option>
+			<option value="32" id="wordsOption32">32</option>
+			<option value="31" id="wordsOption31">31</option>
+			<option value="30" id="wordsOption30">30</option>
+			<option value="29" id="wordsOption29">29</option>
+			<option value="28" id="wordsOption28">28</option>
+			<option value="27" id="wordsOption27">27</option>
+			<option value="26" id="wordsOption26">26</option>
+			<option value="25" id="wordsOption25">25</option>
+			<option value="24" id="wordsOption24">24</option>
+			<option value="23" id="wordsOption23">23</option>
+			<option value="22" id="wordsOption22">22</option>
+			<option value="21" id="wordsOption21">21</option>
+			<option value="20" id="wordsOption20">20</option>
+			<option value="19" id="wordsOption19">19</option>
+			<option value="18" id="wordsOption18">18</option>
+			<option value="17" id="wordsOption17">17</option>
+			<option value="16" id="wordsOption16">16</option>
+			<option value="15" id="wordsOption15" selected>15</option>
+			<option value="14" id="wordsOption14">14</option>
+			<option value="13" id="wordsOption13">13</option>
+			<option value="12" id="wordsOption12">12</option>
+			<option value="11" id="wordsOption11">11</option>
+			<option value="10" id="wordsOption10">10</option>
+			<option value="9" id="wordsOption9">9</option>
+			<option value="8" id="wordsOption8">8</option>
+			<option value="7" id="wordsOption7">7</option>
+			<option value="6" id="wordsOption6">6</option>
+			<option value="5" id="wordsOption5">5</option>
+			<option value="4" id="wordsOption4">4</option>
+			<option value="3" id="wordsOption3">3</option>
+			<option value="2" id="wordsOption2">2</option>
+		</select>
+		<a data-role="button" href="#listPage" data-rel="close" onclick="refreshList();">Save</a>
+	</div><!-- /panel -->
 	<div data-role="header" data-position="fixed">
-		<a data-rel="back" data-icon="back">Back</a>
+		<!-- <a data-rel="back" data-icon="back">Back</a> -->
 		<h1>Random Word List</h1>
+		<a href="#settingsPanel" class="ui-btn-right" data-iconpos="notext" data-icon="gear">Settings</a>
 	</div>
 
 	<div data-role="content">

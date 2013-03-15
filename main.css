@@ -1,7 +1,23 @@
-html.touch html {
+/*html.touch html {
     zoom: 1.5;
 }
 
 html.no-touch html {
     zoom: 1;
+}*/
+
+/*html {
+	zoom: 1.5;
+}*/
+
+#listPage * {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
+/*
+#settingsPanel.ui-panel {
+	width: 200pc;
+}*/
