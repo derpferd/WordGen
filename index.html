@@ -19,15 +19,28 @@
 			});
 			window.wordlist = []
 			window.numberOfWords = 99
+			if (window.localStorage){
+				window.StoreVars = true;
+			}
+			if (window.StoreVars){
+				if ( window.localStorage.numberOfWords ){
+					window.numberOfWords = window.localStorage.numberOfWords;
+				}
+			}
+			$("#numberOfWords").mobiscroll('setValue', [numberOfWords], true)
 		}
 
 		function onloadList(){
 			if ( wordlist.length == 0 ){console.log("Waited");setTimeout(onloadList,50);return 0;}
+
 			words = [];
 			numberOfWords = $("#numberOfWords").val();
+
+			gotoTop();
 			for (var i = 0; i < numberOfWords; i++) {
-				var randomnumber=Math.floor(Math.random()*wordlist.length)
+				var randomnumber=Math.floor(Math.random()*(wordlist.length-1))+1
 				var word = wordlist[randomnumber-1];
+				console.log(word, i, randomnumber, words)
 				if ( words.indexOf(word) == -1 ) {words.push(word);}
 				else {i--;}
 			};
@@ -44,21 +57,29 @@
 			};
 		}
 		function refreshList(){
-			onloadList();
-			showList();
+			hideList();
+			setTimeout(function(){
+				onloadList();
+				showList();
+			},10);
 		}
 		function hideList(){
-			for (var i = words.length - 1; i >= 0; i--) {
-				document.getElementById("word"+(i+1)).style.visibility = "hidden";
-			};
+			$("wordList").hide();
+			// for (var i = words.length - 1; i >= 0; i--) {
+			// 	document.getElementById("word"+(i+1)).style.visibility = "hidden";
+			// };
 		}
 		function showList(){
-			for (var i = words.length - 1; i >= 0; i--) {
-				document.getElementById("word"+(i+1)).style.visibility = "";
-			};
+			$("wordList").show();
+			// for (var i = words.length - 1; i >= 0; i--) {
+			// 	document.getElementById("word"+(i+1)).style.visibility = "";
+			// };
 		}
 		function resetButtons(){
 			$(".ui-btn-active").removeClass("ui-btn-active")
+		}
+		function gotoTop(){
+			$('body').scrollTop(0)
 		}
 		window.onload = function (){
 			if (window.location.hash != ""){
@@ -87,7 +108,12 @@
 			$(function() {
 				var sfd = { 'Label 1': { x: 'x', y: 'y', z: 'z' }, 'Label 2': { a: 'a', b: 'b' } , 'Label 3': { 1: '1', 2: '2' }, 'Label 4': { 4: '4', 5: '5' } }
 				$('#numberOfWords').mobiscroll().select({  theme: 'android-ics', display: 'bubble', mode: 'mixed', inputClass: 'i-txt', headerText: '# of Words', rows: 5, showLabel: false });
-				$('#numberOfWords').mobiscroll().change(function(){refreshList();})
+				$('#numberOfWords').mobiscroll().change(function(){
+					refreshList();
+					if (window.StoreVars){
+						window.localStorage.numberOfWords = $("#numberOfWords").val();
+					}
+				})
 			});
 			auto_zoom();
 
@@ -205,7 +231,7 @@
 			<option value="18" id="wordsOption18">18</option>
 			<option value="17" id="wordsOption17">17</option>
 			<option value="16" id="wordsOption16">16</option>
-			<option value="15" id="wordsOption15" selected>15</option>
+			<option value="15" id="wordsOption15">15</option>
 			<option value="14" id="wordsOption14">14</option>
 			<option value="13" id="wordsOption13">13</option>
 			<option value="12" id="wordsOption12">12</option>
@@ -220,12 +246,12 @@
 			<option value="3" id="wordsOption3">3</option>
 			<option value="2" id="wordsOption2">2</option>
 		</select>
-		<a data-role="button" href="#listPage" data-rel="close" onclick="refreshList();">Save</a>
+		<a data-role="button" href="#listPage" data-rel="close" onclick="">Save</a>
 	</div><!-- /panel -->
 	<div data-role="header" data-position="fixed">
 		<!-- <a data-rel="back" data-icon="back">Back</a> -->
 		<h1>Random Word List</h1>
-		<a href="#settingsPanel" class="ui-btn-right" data-iconpos="notext" data-icon="gear">Settings</a>
+		<a href="#settingsPanel" class="ui-btn-right" data-iconpos="notext" data-icon="gear" onclick="gotoTop();">Settings</a>
 	</div>
 
 	<div data-role="content">
